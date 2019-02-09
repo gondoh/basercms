@@ -17,6 +17,7 @@
  * @property Page $Page
  * @property Content $Content
  * @property BcContentsComponent $BcContents
+ * @property BcMessageComponent $BcMessage
  */
 class PagesController extends AppController {
 
@@ -98,8 +99,12 @@ class PagesController extends AppController {
 				'data' => $data
 			]);
 			
-			$message = sprintf(__d('baser', '固定ページ「%s」を追加しました。(%s)'), $this->request->data['Content']['title'], $this->request->data['Content']['url']);
-			$this->setMessage($message, false, true, false);
+			$this->BcMessage->set(sprintf(
+				__d('baser', '固定ページ「%s」を追加しました。 ( URL : %s )'), 
+				$this->request->data['Content']['title'], 
+				$this->request->data['Content']['url']
+			), false, true, false);
+			
 			return json_encode($data['Content']);
 		} else {
 			$this->ajaxError(500, $this->Page->validationErrors);
@@ -150,7 +155,11 @@ class PagesController extends AppController {
 				}
 
 				// 完了メッセージ
-				$this->setMessage(sprintf(__d('baser', '固定ページ「%s」を更新しました。(%s)'), $this->request->data['Content']['name'], $this->request->data['Content']['url']), false, true);
+				$this->BcMessage->setSuccess(sprintf(
+					__d('baser', '固定ページ「%s」を更新しました。 ( URL : %s )'), 
+					$this->request->data['Content']['name'], 
+					$this->request->data['Content']['url']
+				));
 
 				// EVENT Pages.afterEdit
 				$this->dispatchEvent('afterEdit', [
